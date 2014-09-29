@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.baviereteam.minecraft</groupId>
+	<artifactId>MapWriterAdmin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>MapWriterAdmin</name>
+	<description>Admin client for the MapWriter-Server application.</description>
+
+	<!-- used for Spring GA Releases releases, artifacts are also in maven central -->
+	<repositories>
+		<repository>
+			<!-- Snapshots -->
+			<id>spring-snapshot</id>
+			<name>Spring Maven SNAPSHOT Repository</name>
+			<url>http://repo.springframework.org/libs-snapshot</url>
+		</repository>
+
+		<!-- libs-release for JLine fork, artifacts may not be in maven central -->
+		<repository>
+			<id>libs-release</id>
+			<name>Spring Maven libs-release Repository</name>
+			<url>http://repo.springframework.org/libs-release</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.shell</groupId>
+			<artifactId>spring-shell</artifactId>
+			<version>1.1.0.RELEASE</version>
+		</dependency>
+	</dependencies>
+</project>
