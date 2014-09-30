@@ -27,33 +27,39 @@ public class ServerCommands implements CommandMarker {
 	}
 	
 	@CliCommand(value="server select")
-	public String select() {
-		return "";
+	public String select(
+			@CliOption(key = { "id" }, mandatory = true, help = "The server ID")
+			final int serverId) {
+		return ToolBag.getInstance().getServerInterface().select(serverId);
 	}
 	
-	@CliAvailabilityIndicator({"server create", "server rename", 
+	@CliAvailabilityIndicator({ "server rename", 
 		"server changekey", "server delete"})
 	public boolean serverSelected() {
 		return ToolBag.getInstance().getServerInterface().getSelectedServerId() > 0;
 	}
 	
 	@CliCommand(value="server create")
-	public String create() {
-		return "";
+	public String create(
+			@CliOption(key = { "name" }, mandatory = true, help = "The server name")
+			final String name) {
+		return ToolBag.getInstance().getServerInterface().create(name);
 	}
 	
 	@CliCommand(value="server rename")
-	public String rename() {
-		return "";
+	public String rename(
+			@CliOption(key = { "name" }, mandatory = true, help = "The server name")
+			final String name) {
+		return ToolBag.getInstance().getServerInterface().rename(name);
 	}
 	
 	@CliCommand(value="server changekey")
 	public String changekey() {
-		return "";
+		return ToolBag.getInstance().getServerInterface().changekey();
 	}
 	
 	@CliCommand(value="server delete")
 	public String delete() {
-		return "";
+		return ToolBag.getInstance().getServerInterface().delete();
 	}
 }

@@ -43,7 +43,7 @@ public class Server {
 
 	@Override
 	public String toString() {
-		return id + ". " + name + " (" + key + ")";
+		return id + ". \t" + name + "\t\t (" + key + ")";
 	}
 
 }
