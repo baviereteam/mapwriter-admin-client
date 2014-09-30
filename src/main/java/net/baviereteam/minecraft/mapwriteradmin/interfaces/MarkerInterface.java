@@ -5,196 +5,127 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import net.baviereteam.minecraft.mapwriteradmin.ToolBag;
+import net.baviereteam.minecraft.mapwriteradmin.domain.Marker;
 import net.baviereteam.minecraft.mapwriteradmin.domain.Server;
 import net.baviereteam.minecraft.mapwriteradmin.json.OperationResult;
 
-public class ServerInterface {
+public class MarkerInterface {
+	private long selectedMarkerId = 0;
 	private boolean deleteForReal = false;
 	private Gson gson = new Gson();
 	
-	
-	
-	// Returns a list of all the servers
 	public String list() {
+		if (ToolBag.getInstance().getSelectedServerId() == 0) {
+			return "No server selected !";
+		}
+
 		// Reset deletion security
 		deleteForReal = false;
-		
+
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
-		
+
 		try {
 			// Execute the server command
 			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
-				"server/list", parameters);
-		
+					"markers/" + ToolBag.getInstance().getSelectedServerId() + "/list", parameters);
+
 			StringBuilder sb = new StringBuilder();
-			
+
 			// Operation success
-			if(result.getResult()) {
+			if (result.getResult()) {
 				sb.append("Execution success.\n");
-				
-				List servers = (List) result.getResultingObject(Server.class);
-				if(servers == null) {
+
+				List markers = (List) result.getResultingObject(Marker.class);
+				if (markers == null) {
 					sb.append("No results.");
 				}
-				
+
 				else {
-					sb.append(servers.size() + " results:\n");
-					
-					for(Object item : servers) {
+					sb.append(markers.size() + " results:\n");
+
+					for (Object item : markers) {
 						// Converting the inner object
-						Server server = (Server) item;
-						
-						sb.append(server.toString());
+						Marker marker = (Marker) item;
+
+						sb.append(marker.toString());
 						sb.append("\n");
 					}
 				}
 			}
-			
-			// Operation failed on server
-			else {
-				sb.append("Execution failed.\n");
-				sb.append("Server answered: ");
-				sb.append(result.getErrorMessage());
-			}
-			
-			return sb.toString();
-		}
-		
-		catch(Exception e)  {
-			return e.getMessage();
-		}
-	}
-	
-	// Create a minecraft server
-	public String create(String name) {
-		// Reset deletion security
-		deleteForReal = false;
-				
-		// Parameters are the name of the server and the master key.
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
-		parameters.put("name", name);
-		
-		try {
-			// Execute the server command
-			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
-				"server/create", parameters);
-		
-			StringBuilder sb = new StringBuilder();
-			
-			// Operation success
-			if(result.getResult()) {
-				sb.append("Execution success.\n");
-				
-				// Converting the inner object
-				Server server = (Server) result.getResultingObject(Server.class);
-				if(server == null) {
-					sb.append("No results.");
-				}
-				
-				else {
-					sb.append("Result:\n");
-					sb.append(server.toString());
-				}
-			}
-			
-			// Operation failed on server
-			else {
-				sb.append("Execution failed.\n");
-				sb.append("Server answered: ");
-				sb.append(result.getErrorMessage());
-			}
-			
-			return sb.toString();
-		}
-		
-		catch(Exception e)  {
-			return e.getMessage();
-		}
-	}
-	
-	// Select (locally) a Server ID to work on.
-	public String select(int serverId) {
-		// Reset deletion security
-		deleteForReal = false;
-		
-		ToolBag.getInstance().setSelectedServerId(serverId);
-		return "Selected server with ID " + serverId;
-	}
-	
-	// Rename the selected server
-	public String rename(String name) {
-		// Reset deletion security
-		deleteForReal = false;
-		
-		if(ToolBag.getInstance().getSelectedServerId() == 0) {
-			return "No server selected !";
-		}
-		
-		// Parameters are the master key and the new name
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
-		parameters.put("name", name);
-		
-		try {
-			// Execute the server command
-			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
-				"server/rename/" + ToolBag.getInstance().getSelectedServerId() , parameters);
-		
-			StringBuilder sb = new StringBuilder();
-			
-			// Operation success
-			if(result.getResult()) {
-				sb.append("Execution success.\n");
-				
-				// Converting the inner object
-				Server server = (Server) result.getResultingObject(Server.class);
-				if(server == null) {
-					sb.append("No results.");
-				}
-				
-				else {
-					sb.append("Result:\n");
-					sb.append(server.toString());
-				}
-			}
-			
-			// Operation failed on server
-			else {
-				sb.append("Execution failed.\n");
-				sb.append("Server answered: ");
-				sb.append(result.getErrorMessage());
-			}
-			
-			return sb.toString();
-		}
-		
-		catch(Exception e)  {
-			return e.getMessage();
-		}
-	}
 
-	// Change the key of the selected server
-	public String changekey() {
-		// Reset deletion security
-		deleteForReal = false;
+			// Operation failed on server
+			else {
+				sb.append("Execution failed.\n");
+				sb.append("Server answered: ");
+				sb.append(result.getErrorMessage());
+			}
 
-		if(ToolBag.getInstance().getSelectedServerId() == 0) {
-			return "No server selected !";
+			return sb.toString();
 		}
-		
+
+		catch (Exception e) {
+			return e.getMessage();
+		}
+	}
+	
+	public String select(long markerId) {
+		selectedMarkerId = markerId;
+		return "Selected marker with ID " + markerId;
+	}
+	
+	private Marker get() {
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
 		
+		Marker marker = null;
 		try {
 			// Execute the server command
 			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
-				"server/changekey/" + ToolBag.getInstance().getSelectedServerId() , parameters);
+				"markers/get/" + selectedMarkerId, parameters);
+		
+			// Operation success
+			if(result.getResult()) {
+				marker = (Marker) result.getResultingObject(Marker.class);
+			}
+		}
+		
+		catch(Exception e)  {	}
+		
+		return marker;
+	}
+	
+	public String add(int color, int dimension, String group, String name, int x, int y, int z, String picture) {
+		// Reset deletion security
+		deleteForReal = false;
+			
+		if (ToolBag.getInstance().getSelectedServerId() == 0) {
+			return "No server selected !";
+		}
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("color", ((Integer)color).toString() );
+		parameters.put("dimension", ((Integer)dimension).toString() );
+		parameters.put("group", group);											
+		parameters.put("name", name);
+		parameters.put("x", ((Integer)x).toString() );
+		parameters.put("y", ((Integer)y).toString() );
+		parameters.put("z", ((Integer)z).toString() );
+		
+		if(picture != null) {
+			parameters.put("picture", picture);
+		}
+		
+		try {
+			// Execute the server command
+			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
+					"markers/" + ToolBag.getInstance().getSelectedServerId() + "/add", parameters);
 		
 			StringBuilder sb = new StringBuilder();
 			
@@ -203,14 +134,14 @@ public class ServerInterface {
 				sb.append("Execution success.\n");
 				
 				// Converting the inner object
-				Server server = (Server) result.getResultingObject(Server.class);
-				if(server == null) {
+				Marker marker = (Marker) result.getResultingObject(Marker.class);
+				if(marker == null) {
 					sb.append("No results.");
 				}
 				
 				else {
 					sb.append("Result:\n");
-					sb.append(server.toString());
+					sb.append(marker.toString());
 				}
 			}
 			
@@ -229,15 +160,115 @@ public class ServerInterface {
 		}
 	}
 	
-	// Delete the selected server
+	public String edit(Integer color, Integer dimension, String group, String name, Integer x, Integer y, Integer z, String picture) {
+		// Reset deletion security
+		deleteForReal = false;
+		
+		if(selectedMarkerId == 0) {
+			return "No marker selected !";
+		}
+		
+		// Extract the previous marker
+		Marker marker = this.get();
+		if(marker == null) {
+			return "Could not extract the selected marker.";
+		}
+		
+		// Map properties. Null parameters will keep the previous values. All others will be replaced.
+		if(color != null) {
+			marker.setColor(color);
+		}
+		
+		if(dimension != null) {
+			marker.setDimension(dimension);
+		}
+		
+		if(group != null) {
+			marker.setGroup(group);
+		}
+		
+		if(name != null) {
+			marker.setName(name);
+		}
+		
+		if(picture != null) {
+			marker.setPicture(picture);
+		}
+		else {
+			// Avoid null here (would crash)
+			marker.setPicture("");
+		}
+		
+		if(x != null) {
+			marker.setX(x);
+		}
+		
+		if(y != null) {
+			marker.setY(y);
+		}
+		
+		if(z != null) {
+			marker.setZ(z);
+		}
+		
+		// Business starts now
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("color", ((Integer) marker.getColor()).toString() );
+		parameters.put("dimension", ((Integer) marker.getDimension()).toString() );
+		parameters.put("group", marker.getGroup());											
+		parameters.put("name", marker.getName());
+		parameters.put("x", ((Integer) marker.getX()).toString() );
+		parameters.put("y", ((Integer) marker.getY()).toString() );
+		parameters.put("z", ((Integer) marker.getZ()).toString() );
+		parameters.put("picture", marker.getPicture());
+		
+		try {
+			// Execute the server command
+			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
+					"markers/edit/" + selectedMarkerId, parameters);
+		
+			StringBuilder sb = new StringBuilder();
+			
+			// Operation success
+			if(result.getResult()) {
+				sb.append("Execution success.\n");
+				
+				// Converting the inner object
+				Marker newMarker = (Marker) result.getResultingObject(Marker.class);
+				if(newMarker == null) {
+					sb.append("No results.");
+				}
+				
+				else {
+					sb.append("Result:\n");
+					sb.append(newMarker.toString());
+				}
+			}
+			
+			// Operation failed on server
+			else {
+				sb.append("Execution failed.\n");
+				sb.append("Server answered: ");
+				sb.append(result.getErrorMessage());
+			}
+			
+			return sb.toString();
+		}
+		
+		catch(Exception e)  {
+			return e.getMessage();
+		}
+	}
+	
 	public String delete() {
 		if(!deleteForReal) {
 			deleteForReal = true;
-			return "Please type the command again to confirm deletion of this server. There is no coming back !";
+			return "Please type the command again to confirm deletion of this marker. There is no coming back !";
 		}
 		
-		if(ToolBag.getInstance().getSelectedServerId() == 0) {
-			return "No server selected !";
+		if(selectedMarkerId == 0) {
+			return "No marker selected !";
 		}
 		
 		// Only parameter required is the master key
@@ -247,7 +278,7 @@ public class ServerInterface {
 		try {
 			// Execute the server command
 			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
-				"server/delete/" + ToolBag.getInstance().getSelectedServerId() , parameters);
+				"markers/delete/" + selectedMarkerId , parameters);
 		
 			StringBuilder sb = new StringBuilder();
 			

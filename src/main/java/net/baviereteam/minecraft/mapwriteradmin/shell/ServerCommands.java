@@ -17,7 +17,7 @@ public class ServerCommands implements CommandMarker {
 		@CliOption(key = { "key" }, mandatory = true, help = "The master key")
 		final String key) {
 		
-		ToolBag.getInstance().getServerInterface().setMasterKey(key);
+		ToolBag.getInstance().setMasterKey(key);
 		return "Using key " + key;
 	}
 	
@@ -36,7 +36,7 @@ public class ServerCommands implements CommandMarker {
 	@CliAvailabilityIndicator({ "server rename", 
 		"server changekey", "server delete"})
 	public boolean serverSelected() {
-		return ToolBag.getInstance().getServerInterface().getSelectedServerId() > 0;
+		return ToolBag.getInstance().getSelectedServerId() > 0;
 	}
 	
 	@CliCommand(value="server create")

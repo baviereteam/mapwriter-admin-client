@@ -95,4 +95,9 @@ public class Marker {
 
 	public Marker() {
 	}
+	
+	@Override
+	public String toString() {
+		return id + ".  " + name + "(in " + group + " at " + x + "," + y + "," + z + ")";
+	}
 }

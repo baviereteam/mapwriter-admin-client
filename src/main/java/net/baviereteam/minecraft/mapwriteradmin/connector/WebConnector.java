@@ -25,12 +25,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import net.baviereteam.minecraft.mapwriteradmin.json.OperationResult;
 
 public class WebConnector {
 	private String host = "";
 	private int port = 0;
+	private Gson gson = new Gson();
 
 	public String getHost() {
 		return host;
@@ -50,9 +52,8 @@ public class WebConnector {
 
 	public OperationResult execute(String command, Map<String, String> parameters) throws Exception {
 		String response = this.query(command, parameters);
-		
-		Gson gson = new Gson();
-		OperationResult result = gson.fromJson(response, OperationResult.class);
+		JsonObject json = gson.fromJson(response, JsonObject.class);
+		OperationResult result = new OperationResult(json);
 		
 		return result;
 	}
@@ -64,7 +65,7 @@ public class WebConnector {
 
 		List<NameValuePair> postParams = new ArrayList<NameValuePair>();
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			postParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+			postParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue().replace(":", "-")));
 		}
 
 		request.setEntity(new UrlEncodedFormEntity(postParams));
