@@ -1,5 +1,6 @@
 package net.baviereteam.minecraft.mapwriteradmin;
 
+import net.baviereteam.minecraft.mapwriteradmin.connector.MinecraftOverviewerPoiConnector;
 import net.baviereteam.minecraft.mapwriteradmin.connector.WebConnector;
 import net.baviereteam.minecraft.mapwriteradmin.interfaces.MarkerInterface;
 import net.baviereteam.minecraft.mapwriteradmin.interfaces.ServerInterface;
@@ -15,14 +16,14 @@ public class ToolBag {
 		return instance;
 	}
 	
-	private String masterKey = "";
+	private String usedKey = "";
 	private int selectedServerId = 0;
 	
-	public String getMasterKey() {
-		return masterKey;
+	public String getUsedKey() {
+		return usedKey;
 	}
-	public void setMasterKey(String masterKey) {
-		this.masterKey = masterKey;
+	public void setUsedKey(String usedKey) {
+		this.usedKey = usedKey;
 	}
 	
 	public int getSelectedServerId() {
@@ -36,6 +37,7 @@ public class ToolBag {
 	private ServerInterface serverInterface = new ServerInterface();
 	private MarkerInterface markerInterface = new MarkerInterface();
 	private JsonConverter jsonConverter = new JsonConverter();
+	private MinecraftOverviewerPoiConnector poiConnector = new MinecraftOverviewerPoiConnector();
 	
 	public WebConnector getWebConnector() {
 		return webConnector;
@@ -48,5 +50,8 @@ public class ToolBag {
 	}
 	public JsonConverter getJsonConverter() {
 		return jsonConverter;
+	}
+	public MinecraftOverviewerPoiConnector getPoiConnector() {
+		return poiConnector;
 	}
 }

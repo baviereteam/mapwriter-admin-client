@@ -17,7 +17,7 @@ public class ServerCommands implements CommandMarker {
 		@CliOption(key = { "key" }, mandatory = true, help = "The master key")
 		final String key) {
 		
-		ToolBag.getInstance().setMasterKey(key);
+		ToolBag.getInstance().setUsedKey(key);
 		return "Using key " + key;
 	}
 	

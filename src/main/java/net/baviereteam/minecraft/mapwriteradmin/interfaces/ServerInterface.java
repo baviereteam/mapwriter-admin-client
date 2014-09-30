@@ -23,7 +23,7 @@ public class ServerInterface {
 		
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		
 		try {
 			// Execute the server command
@@ -76,7 +76,7 @@ public class ServerInterface {
 				
 		// Parameters are the name of the server and the master key.
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		parameters.put("name", name);
 		
 		try {
@@ -137,7 +137,7 @@ public class ServerInterface {
 		
 		// Parameters are the master key and the new name
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		parameters.put("name", name);
 		
 		try {
@@ -189,7 +189,7 @@ public class ServerInterface {
 		
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		
 		try {
 			// Execute the server command
@@ -242,7 +242,7 @@ public class ServerInterface {
 		
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		
 		try {
 			// Execute the server command

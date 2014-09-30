@@ -27,7 +27,7 @@ public class MarkerInterface {
 
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 
 		try {
 			// Execute the server command
@@ -72,6 +72,46 @@ public class MarkerInterface {
 			return e.getMessage();
 		}
 	}
+
+	public List listAsMarkerList() throws Exception {
+		if (ToolBag.getInstance().getSelectedServerId() == 0) {
+			throw new Exception ("No server selected !");
+		}
+
+		// Only parameter required is the master key
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
+
+		try {
+			// Execute the server command
+			OperationResult result = ToolBag.getInstance().getWebConnector().execute(
+					"markers/" + ToolBag.getInstance().getSelectedServerId() + "/list", parameters);
+
+			StringBuilder sb = new StringBuilder();
+
+			// Operation success
+			if (result.getResult()) {
+				sb.append("Execution success.\n");
+
+				List markers = (List) result.getResultingObject(Marker.class);
+				return markers;
+			}
+
+			// Operation failed on server
+			else {
+				sb.append("Execution failed.\n");
+				sb.append("Server answered: ");
+				sb.append(result.getErrorMessage());
+			}
+
+			throw new Exception(sb.toString());
+		}
+
+		catch (Exception e) {
+			throw e;
+		}
+	}
+	
 	
 	public String select(long markerId) {
 		selectedMarkerId = markerId;
@@ -81,7 +121,7 @@ public class MarkerInterface {
 	private Marker get() {
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		
 		Marker marker = null;
 		try {
@@ -109,7 +149,7 @@ public class MarkerInterface {
 		}
 		
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		parameters.put("color", ((Integer)color).toString() );
 		parameters.put("dimension", ((Integer)dimension).toString() );
 		parameters.put("group", group);											
@@ -213,7 +253,7 @@ public class MarkerInterface {
 		
 		// Business starts now
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		parameters.put("color", ((Integer) marker.getColor()).toString() );
 		parameters.put("dimension", ((Integer) marker.getDimension()).toString() );
 		parameters.put("group", marker.getGroup());											
@@ -273,7 +313,7 @@ public class MarkerInterface {
 		
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("userKey", ToolBag.getInstance().getMasterKey());
+		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
 		
 		try {
 			// Execute the server command
