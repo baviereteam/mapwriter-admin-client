@@ -5,3 +5,4 @@ local.properties
 .classpath
 target/
 .DS_Store
+spring-shell.log
