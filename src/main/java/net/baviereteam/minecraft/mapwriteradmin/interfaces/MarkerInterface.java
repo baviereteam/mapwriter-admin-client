@@ -16,6 +16,7 @@ public class MarkerInterface {
 	private long selectedMarkerId = 0;
 	private boolean deleteForReal = false;
 	private Gson gson = new Gson();
+	private String lastGetError = "";
 	
 	public String list() {
 		if (ToolBag.getInstance().getSelectedServerId() == 0) {
@@ -119,6 +120,8 @@ public class MarkerInterface {
 	}
 	
 	private Marker get() {
+		this.lastGetError = "";
+		
 		// Only parameter required is the master key
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("userKey", ToolBag.getInstance().getUsedKey());
@@ -135,7 +138,9 @@ public class MarkerInterface {
 			}
 		}
 		
-		catch(Exception e)  {	}
+		catch(Exception e)  {
+			this.lastGetError = e.getMessage();
+		}
 		
 		return marker;
 	}
@@ -211,7 +216,7 @@ public class MarkerInterface {
 		// Extract the previous marker
 		Marker marker = this.get();
 		if(marker == null) {
-			return "Could not extract the selected marker.";
+			return "Could not extract the selected marker: " + this.lastGetError;
 		}
 		
 		// Map properties. Null parameters will keep the previous values. All others will be replaced.

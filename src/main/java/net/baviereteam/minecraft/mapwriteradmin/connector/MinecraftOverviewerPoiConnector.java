@@ -1,5 +1,9 @@
 package net.baviereteam.minecraft.mapwriteradmin.connector;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +42,12 @@ public class MinecraftOverviewerPoiConnector {
 		
 		// Let's write now !
 		sb.append("\t{\n");
-		
+
+		sb.append( String.format("\t\t'id': '%d',\n", marker.getId()) );
 		sb.append( String.format("\t\t'group': '%s',\n", marker.getGroup()) );
 		sb.append( String.format("\t\t'name': '%s',\n", marker.getName()) );
 		
-		if(marker.getPicture() != null && marker.getPicture() != "") {
+		if(marker.getPicture() != null && !marker.getPicture().equals("")) {
 			sb.append( String.format("\t\t'icon': '%s',\n", marker.getPicture()) );
 		}
 		
@@ -116,9 +121,10 @@ public class MinecraftOverviewerPoiConnector {
 	private void writeMarkerGroup(String group) {
 		sb.append( 
 			String.format(
-				"dict(name='%s', filterFunction=filter_%s)",
+				"dict(name='%s', filterFunction=filter_%s, icon='../custom-icons/%s.png')",
 				group.replace("auto-", ""),
-				this.sanitize(group)
+				this.sanitize(group),
+				group
 			)
 		);
 	}
@@ -136,12 +142,32 @@ public class MinecraftOverviewerPoiConnector {
 		return result.toString();
 	}
 	
+	private String saveToFile(String filePath) {
+		try {
+			FileOutputStream stream = new FileOutputStream(filePath, false);
+			
+			byte[] bytes = sb.toString().getBytes();
+			stream.write(bytes, 0, bytes.length);
+			stream.close();
+			
+			return "Done.";
+			
+		} catch (FileNotFoundException e) {
+			return "File not found";
+			
+		} catch (IOException e) {
+			return "Erreur d'écriture: " + e.getMessage();
+		}
+		
+	}
+	
 	public String generateMarkerFile(List<Marker> markers, String path) {
 		// Reset
 		this.sb = new StringBuilder();
 		this.groups = new ArrayList<String>();
 		this.markers = markers;
 		
+		sb.append("# coding=utf-8\n");
 		sb.append("## MAPWRITER-ADMIN-CLIENT\n");
 		sb.append("## Generated POI file\n\n");
 		
@@ -156,6 +182,7 @@ public class MinecraftOverviewerPoiConnector {
 		
 		sb.append("\n## END");
 		
-		return sb.toString();
+		String result = this.saveToFile(path);
+		return result;
 	}
 }

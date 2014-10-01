@@ -36,6 +36,10 @@ public class BatchCommands implements CommandMarker {
 		
 		try {
 			List<Marker> list = ToolBag.getInstance().getMarkerInterface().listAsMarkerList();
+			if(list == null) {
+				return "Erreur d'obtention de la liste des marqueurs !";
+			}
+			
 			return ToolBag.getInstance().getPoiConnector().generateMarkerFile(list, path);
 		}
 		
